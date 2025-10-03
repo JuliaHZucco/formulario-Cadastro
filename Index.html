@@ -3,9 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <title>Formulario</title>
 </head>
 <body>
-    
+
+<form class="needs-validation" novalidate>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Cadastre-se aqui</h2>
+
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">Primeiro nome</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Digite seu primeiro nome" required>
+                        <div class="valid-feedback">
+                            Tudo certo!
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="secondName">Sobrenome</label>
+                        <input type="text" class="form-control" id="secondName" placeholder="Digite seu sobrenome" required>
+                        <div class="valid-feedback">
+                            Tudo certo!
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label for="emailUser">E-mail</label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" id="emailUser" placeholder="Digite seu e-mail" aria-describedby="inputGroupPrepend" required>
+                            <div class="invalid-feedback">
+                                Por favor, digite seu e-mail.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="cityName">Cidade</label>
+                        <input type="text" class="form-control" id="cityName" placeholder="Digite sua cidade" required>
+                        <div class="invalid-feedback">
+                            Por favor, informe uma cidade válida.
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="stateName">Estado</label>
+                        <input type="text" class="form-control" id="stateName" placeholder="Digite seu estado" required>
+                        <div class="invalid-feedback">
+                            Por favor, informe um estado válido.
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="cep">CEP</label>
+                        <input type="text" class="form-control" id="cep" placeholder="Digite seu CEP" required>
+                        <div class="invalid-feedback">
+                            Por favor, informe um CEP válido.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <label class="form-check-label" for="invalidCheck">
+                            Concordo com os termos e condições
+                        </label>
+                        <div class="invalid-feedback">
+                            Você deve concordar, antes de continuar.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block" type="submit">Enviar</button>
+
+            </div> 
+        </div> 
+    </div> 
+</form>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>

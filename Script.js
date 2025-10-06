@@ -156,24 +156,28 @@ $(document).ready(function() {
         });
     }
 
-    // consulta CEP via ViaCEP
-    function lookupCEP(cep){
-        // remove caracteres nao numericos do cep 
-        cep = cep.replace(/\D/g,'');
-        // se cep não tiver 8 digitos, sai 
-        if(cep.length !== 8) return;
-        // consulta cep via API do ViaCEP 
-        $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data){
-            console.log("Retorno ViaCEP:", data);
-            // se nao tiver erro, preenche estado e cidade 
-            if(!data.erro){
-                preenchidoPorCep = true; // flag pra evitar conflito com onchange do estado
-                $("#stateName").val(data.uf); // preenche estado
-                populateCities(data.uf, data.localidade); // preenche cidades e seleciona a correta 
-                setTimeout(() => { preenchidoPorCep = false; }, 100); // libera pra mudanças manuais
-            }
-        });
-    }
+// consulta CEP via CEP REST
+function lookupCEP(cep) {
+    // remove caracteres não numéricos do CEP
+    cep = cep.replace(/\D/g, '');
+    if (cep.length !== 8) return;
+
+    $.getJSON(`https://cep.rest/json/${cep}`, function(data) {
+        console.log("Retorno CEP REST:", data);
+
+        // verifica se retornou erro
+        if (!data.error) {
+            preenchidoPorCep = true; // evita conflito com onchange do estado
+            $("#stateName").val(data.state); // preenche estado
+            populateCities(data.state, data.city); // preenche cidades e seleciona a correta
+            setTimeout(() => { preenchidoPorCep = false; }, 100); // libera para mudanças manuais
+        } else {
+            console.warn("Erro ao buscar CEP:", data.message || "CEP não encontrado");
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Erro na requisição do CEP REST:", textStatus, errorThrown);
+    });
+}
 
     // quando o usuario sair do campo cep ou digitar, faz a consulta
     $("#cep").on("blur keyup", function(){

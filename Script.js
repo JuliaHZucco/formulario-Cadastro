@@ -4,8 +4,13 @@ const resultList = $("#resultList");
 const profileInput = $("#profilePhoto");
 const photoPreview = $("#photoPreview");
 
+const estados = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
+//percorre o array e adiciona cada estado ao select 
+estados.forEach(uf => $("#stateName").append(`<option value="${uf}">${uf}</option>`));
+
 let photoDataURL = "";
 let isValidPhoto = false;
+let preenchidoPorCep = false;
 
 // montar o HTML de resultados com os dados do usuário
 function buildUserData() {
@@ -15,6 +20,7 @@ function buildUserData() {
         "Telefone": $("#phoneUser").val(),
         "Cidade": $("#cityName").val(),
         "Estado": $("#stateName").val(),
+        "Logradouro": $("#address").val(),
         "CEP": $("#cep").val()
     };
 
@@ -77,14 +83,15 @@ $(document).ready(function() {
             },
             cityName: {
                 required: true,
-                minlength: 3
             },
             stateName: {
                 required: true,
-                minlength: 2
             },
             invalidCheck: {
                 required: true
+            },
+            address: {
+                required: false
             }
         },
         messages: {
@@ -110,29 +117,91 @@ $(document).ready(function() {
                 minlength: "O CEP deve ter 8 dígitos (00000-000)."
             },
             cityName: {
-                required: "Por favor, digite sua cidade.",
-                minlength: "A cidade deve ter no mínimo 3 caracteres."
+                required: "Por favor, selecione sua cidade.",
             },
             stateName: {
-                required: "Por favor, digite seu estado.",
-                minlength: "O estado deve ter no mínimo 2 caracteres."
+                required: "Por favor, selecione seu estado.",
             },
             invalidCheck: {
                 required: "Você deve concordar, antes de continuar."
             }
         },
-        errorElement: "div",
-        errorClass: "invalid-feedback d-block", 
-        highlight: function (element) {
+        errorElement: "div", // cada elemento de erro sera uma div
+        errorClass: "invalid-feedback d-block", // classes do bootstrap p erro 
+        highlight: function (element) { // coloca borda vermelha no input com erro 
             $(element).addClass("is-invalid").removeClass("is-valid");
         },
-        unhighlight: function (element) {
+        unhighlight: function (element) { // coloca borda verde no input ok 
             $(element).removeClass("is-invalid").addClass("is-valid");
         }
     });
-    // máscaras 
+    // máscaras para telefone e cep 
     $("#phoneUser").mask("(00) 00000-0000");   
     $("#cep").mask("00000-000");
+
+    // popula cidades via IBGE
+    function populateCities(uf, selectedCity){
+        //limpa o select de cidades 
+        $("#cityName").empty().append('<option value="">Selecione a cidade</option>');
+        // se não tiver estado selecionado, sai
+        if(!uf) return;
+        // consulta as cidades do estado selecionado via API do IBGE 
+        $.getJSON(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`, function(data){
+            // adiciona cada cidade ao select 
+            data.forEach(cidade => {
+                $("#cityName").append(`<option value="${cidade.nome}">${cidade.nome}</option>`);
+            });
+            // se tiver cidade selecionada (via cep), marca ela 
+            if(selectedCity) $("#cityName").val(selectedCity);
+        });
+    }
+
+    // consulta CEP via ViaCEP
+    function lookupCEP(cep){
+        // remove caracteres nao numericos do cep 
+        cep = cep.replace(/\D/g,'');
+        // se cep não tiver 8 digitos, sai 
+        if(cep.length !== 8) return;
+        // consulta cep via API do ViaCEP 
+        $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data){
+            // se nao tiver erro, preenche estado e cidade 
+            if(!data.erro){
+                preenchidoPorCep = true; // flag pra evitar conflito com onchange do estado
+                $("#stateName").val(data.uf); // preenche estado
+                populateCities(data.uf, data.localidade); // preenche cidades e seleciona a correta 
+                setTimeout(() => { preenchidoPorCep = false; }, 100); // libera pra mudanças manuais
+            }
+        });
+    }
+
+    // quando o usuario sair do campo cep, faz a consulta  
+    $("#cep").on("blur", function(){
+        lookupCEP($(this).val());
+    });
+
+    // quando o usuario sair do campo estado, faz a consulta
+    $("#stateName").on("change", function(){
+        if(preenchidoPorCep) return; // não sobrescreve se veio do CEP
+        populateCities($(this).val());
+    });
+
+    // aviso para CEP se cidade selecionada manualmente
+    $("#cityName").on("change", function(){
+        if(preenchidoPorCep) {
+            $("#cepWarning").hide();
+            return;
+        }
+        if($(this).val()){ // se cidade selecionada, mostra aviso de digitar o cep correto 
+            $("#cepWarning").fadeIn();
+        } else {
+            $("#cepWarning").fadeOut();
+        }
+    });
+
+    // esconde aviso quando o usuário digita no CEP
+    $("#cep").on("input", function(){
+        $("#cepWarning").fadeOut();
+    });
 
     // preview da foto de perfil e validação
     profileInput.on("change", function(event) {

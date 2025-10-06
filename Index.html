@@ -26,44 +26,56 @@
 
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
-                        <label for="firstName">Primeiro nome</label>
+                        <label for="firstName">Primeiro nome <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Digite seu primeiro nome" required> 
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="secondName">Sobrenome</label>
+                        <label for="secondName">Sobrenome <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Digite seu sobrenome" required> 
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
-                        <label for="emailUser">E-mail</label>
+                        <label for="emailUser">E-mail <span class="text-danger">*</span></label>
                         <input type="email" class="form-control" id="emailUser" name="emailUser" placeholder="Digite seu e-mail" aria-describedby="inputGroupPrepend" required> 
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="phoneUser">Telefone</label>
+                        <label for="phoneUser">Telefone <span class="text-danger">*</span></label>
                         <input type="tel" class="form-control" id="phoneUser" name="phoneUser" placeholder="Digite seu telefone" aria-describedby="inputGroupPrepend" required> 
                     </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="col-12 mb-3"> 
-                        <label for="cep">CEP</label>
-                        <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite seu CEP" required> 
+                    <div class="col-md-6 mb-3">
+                        <label for="cep">CEP <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite seu CEP" required>
+                        <div id="cepWarning" class="text-warning small mt-1" style="display:none;">
+                            Digite o CEP correspondente à cidade selecionada.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="stateName">Estado <span class="text-danger">*</span></label>
+                        <select class="form-control" id="stateName" name="stateName">
+                            <option value="">Selecione o estado</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="form-row"> 
-                    <div class="col-md-8 mb-3"> 
-                        <label for="cityName">Cidade</label>
-                        <input type="text" class="form-control" id="cityName" name="cityName" placeholder="Digite sua cidade" required> 
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="cityName">Cidade <span class="text-danger">*</span></label>
+                        <select class="form-control" id="cityName" name="cityName">
+                            <option value="">Selecione a cidade</option>
+                        </select>
                     </div>
 
-                    <div class="col-md-4 mb-3"> 
-                        <label for="stateName">Estado</label>
-                        <input type="text" class="form-control" id="stateName" name="stateName" placeholder="Digite seu estado" required> 
+                    <div class="col-md-6 mb-3">
+                        <label for="address">Logradouro <span class="text-muted">(opcional)</span></label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Digite o logradouro">
                     </div>
                 </div>
 

@@ -164,6 +164,7 @@ $(document).ready(function() {
         if(cep.length !== 8) return;
         // consulta cep via API do ViaCEP 
         $.getJSON(`https://viacep.com.br/ws/${cep}/json/`, function(data){
+            console.log("Retorno ViaCEP:", data);
             // se nao tiver erro, preenche estado e cidade 
             if(!data.erro){
                 preenchidoPorCep = true; // flag pra evitar conflito com onchange do estado
@@ -174,9 +175,12 @@ $(document).ready(function() {
         });
     }
 
-    // quando o usuario sair do campo cep, faz a consulta  
-    $("#cep").on("blur", function(){
-        lookupCEP($(this).val());
+    // quando o usuario sair do campo cep ou digitar, faz a consulta
+    $("#cep").on("blur keyup", function(){
+    let cep = $(this).val().replace(/\D/g,'');
+    if (cep.length === 8) {
+        lookupCEP(cep);
+    }
     });
 
     // quando o usuario sair do campo estado, faz a consulta

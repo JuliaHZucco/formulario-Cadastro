@@ -27,31 +27,31 @@
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName">Primeiro nome <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Digite seu primeiro nome" required> 
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Digite seu primeiro nome" autocomplete="given-name" required> 
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="secondName">Sobrenome <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Digite seu sobrenome" required> 
+                        <input type="text" class="form-control" id="secondName" name="secondName" placeholder="Digite seu sobrenome" autocomplete="family-name"required> 
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
                         <label for="emailUser">E-mail <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="emailUser" name="emailUser" placeholder="Digite seu e-mail" aria-describedby="inputGroupPrepend" required> 
+                        <input type="email" class="form-control" id="emailUser" name="emailUser" placeholder="Digite seu e-mail" aria-describedby="inputGroupPrepend" autocomplete="email" required> 
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="phoneUser">Telefone <span class="text-danger">*</span></label>
-                        <input type="tel" class="form-control" id="phoneUser" name="phoneUser" placeholder="Digite seu telefone" aria-describedby="inputGroupPrepend" required> 
+                        <input type="tel" class="form-control" id="phoneUser" name="phoneUser" placeholder="Digite seu telefone" aria-describedby="inputGroupPrepend" autocomplete="tel" required> 
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
                         <label for="cep">CEP <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite seu CEP" required>
+                        <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite seu CEP" autocomplete="postal-code" required>
                         <div id="cepWarning" class="text-warning small mt-1" style="display:none;">
                             Digite o CEP correspondente à cidade selecionada.
                         </div>
@@ -75,7 +75,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="address">Logradouro <span class="text-muted">(opcional)</span></label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="Digite o logradouro">
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Digite o logradouro"  autocomplete="street-address">
                     </div>
                 </div>
 

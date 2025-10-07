@@ -57,16 +57,23 @@ function resetPhotoPreview() {
 // validação do form
 $(document).ready(function() {
 
+    // validar só letras e espaços
+    $.validator.addMethod("onlyLetters", function(value, element) {
+        return this.optional(element) || /^[A-Za-zÀ-ÿ\s]+$/.test(value);
+    }, "O campo deve conter apenas letras.");
+
     // validação de tamanho e preenchimento dos inputs
     $("#formRegistration").validate({
         rules: {
             firstName: {
                 required: true,
-                minlength: 3
+                minlength: 3,
+                onlyLetters: true
             },
             secondName: {
                 required: true,
-                minlength: 3
+                minlength: 3,
+                onlyLetters: true
             },
             emailUser: {
                 required: true,
@@ -97,11 +104,13 @@ $(document).ready(function() {
         messages: {
             firstName: {
                 required: "Por favor, digite seu primeiro nome.",
-                minlength: "O nome deve ter no mínimo 3 caracteres."
+                minlength: "O nome deve ter no mínimo 3 caracteres.",
+                onlyLetters: "O nome deve conter apenas letras."
             },
             secondName: {
                 required: "Por favor, digite seu sobrenome.",
-                minlength: "O sobrenome deve ter no mínimo 3 caracteres."
+                minlength: "O sobrenome deve ter no mínimo 3 caracteres.",
+                onlyLetters: "O sobrenome deve conter apenas letras."
             },
             emailUser: {
                 required: "Por favor, digite seu e-mail.",
@@ -156,34 +165,50 @@ $(document).ready(function() {
         });
     }
 
-// consulta CEP via CEP REST
-function lookupCEP(cep) {
-    // remove caracteres não numéricos do CEP
-    cep = cep.replace(/\D/g, '');
-    if (cep.length !== 8) return;
+    // consulta o CEP via API cep.rest
+    function lookupCEP(cep) {
+        cep = cep.replace(/\D/g, ''); // remove qualquer coisa que não seja número
+        if (cep.length !== 8) return; // se não tiver 8 dígitos, sai
+        // faz a consulta via AJAX
+        $.ajax({
+            url: "https://api.cep.rest/",
+            method: "POST",
+            contentType: "application/json", // envia como JSON
+            dataType: "json",
+            data: JSON.stringify({ cep }), // envia o CEP no corpo da requisição
+            success: function(response) { // sucesso na consulta
+                console.log("Retorno CEP REST:", response);
 
-    $.getJSON(`https://cep.rest/json/${cep}`, function(data) {
-        console.log("Retorno CEP REST:", data);
-
-        // verifica se retornou erro
-        if (!data.error) {
-            preenchidoPorCep = true; // evita conflito com onchange do estado
-            $("#stateName").val(data.state); // preenche estado
-            populateCities(data.state, data.city); // preenche cidades e seleciona a correta
-            setTimeout(() => { preenchidoPorCep = false; }, 100); // libera para mudanças manuais
-        } else {
-            console.warn("Erro ao buscar CEP:", data.message || "CEP não encontrado");
-        }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        console.error("Erro na requisição do CEP REST:", textStatus, errorThrown);
-    });
-}
+                if (!response?.success || !response?.data) { // se não tiver sucesso ou dados, mostra aviso
+                    console.warn("Erro ao buscar CEP:", response?.message || "Resposta inválida");
+                    return;
+                }
+                // extrai estado e cidade da resposta 
+                const cepData = response.data;
+                const estado = cepData.uf || cepData.estado;
+                const cidade = cepData.localidade || cepData.cidade;
+                // se não tiver estado ou cidade, mostra aviso
+                if (!estado || !cidade) {
+                    console.warn("Erro ao buscar CEP: Dados incompletos");
+                    return;
+                }
+                // preenche os campos de estado e cidade
+                preenchidoPorCep = true;
+                $("#stateName").val(estado);
+                populateCities(estado, cidade);
+                setTimeout(() => { preenchidoPorCep = false; }, 100);
+            }, // erro na consulta
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Erro na requisição do CEP REST:", textStatus, errorThrown);
+            }
+        });
+    }
 
     // quando o usuario sair do campo cep ou digitar, faz a consulta
     $("#cep").on("blur keyup", function(){
-    let cep = $(this).val().replace(/\D/g,'');
-    if (cep.length === 8) {
-        lookupCEP(cep);
+        let cep = $(this).val().replace(/\D/g,'');
+        if (cep.length === 8) {
+            lookupCEP(cep);
     }
     });
 
@@ -254,6 +279,7 @@ function lookupCEP(cep) {
         form[0].reset();
         form.find(".is-invalid, .is-valid").removeClass("is-invalid is-valid");
         form.find(".invalid-feedback").remove();
+        form.find("#cepWarning").hide();
         resetPhotoPreview();
     });
 });
